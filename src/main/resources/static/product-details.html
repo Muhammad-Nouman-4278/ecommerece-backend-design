@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Shop - Product Details</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">
+                <a href="/">E-Shop</a>
+            </div>
+            <nav class="nav-links">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/products.html">Products</a></li>
+                </ul>
+            </nav>
+            <div class="search-box">
+                <input type="text" placeholder="Search products...">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <div id="productDetails">
+        <!-- Product details loaded via JavaScript -->
+    </div>
+</main>
+
+<script src="/script.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Get product ID from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get('id');
+
+      // Fetch product details from your API
+      const response = await fetch(`/api/products/${productId}`);
+      const product = await response.json();
+
+      const productDetails = document.getElementById('productDetails');
+      productDetails.innerHTML = `
+        <div class="product-detail">
+          <div class="product-images">
+            <img src="${product.image}" alt="${product.name}">
+          </div>
+          <div class="product-info">
+            <h1>${product.name}</h1>
+            <div class="product-price">$${product.price.toFixed(2)}</div>
+            <p>${product.description}</p>
+            <div class="product-meta">
+              <span>Category: ${product.category}</span>
+              <span>In Stock: ${product.stock}</span>
+            </div>
+            <button class="btn btn-primary" onclick="addToCart(${product.id}, '${product.name}', ${product.price}, '${product.image}')">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      `;
+    });
+
+    function addToCart(productId, productName, price, image) {
+      // Implement cart functionality
+      alert(`${productName} added to cart!`);
+      // In a real app, you would add to localStorage or send to backend
+    }
+</script>
+</body>
+</html>

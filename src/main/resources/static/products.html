@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Shop - Products</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">
+                <a href="/">E-Shop</a>
+            </div>
+            <nav class="nav-links">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/products.html" class="active">Products</a></li>
+                </ul>
+            </nav>
+            <div class="search-box">
+                <input type="text" placeholder="Search products..." id="searchInput">
+                <i class="fas fa-search" id="searchBtn"></i>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <h1>All Products</h1>
+    <div class="products-grid" id="allProducts">
+        <!-- Products loaded via JavaScript -->
+    </div>
+</main>
+
+<script src="/script.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Get category from URL if exists
+      const urlParams = new URLSearchParams(window.location.search);
+      const category = urlParams.get('category');
+
+      // Fetch all products (or filtered by category) from your API
+      const url = category ? `/api/products?category=${category}` : '/api/products';
+      const response = await fetch(url);
+      const products = await response.json();
+
+      const productsGrid = document.getElementById('allProducts');
+      productsGrid.innerHTML = products.map(product => `
+        <div class="product-card">
+          <div class="product-image">
+            <img src="${product.image}" alt="${product.name}">
+          </div>
+          <div class="product-info">
+            <h3 class="product-title">${product.name}</h3>
+            <div class="product-price">$${product.price.toFixed(2)}</div>
+            <a href="/product-details.html?id=${product.id}" class="btn btn-primary">View Details</a>
+          </div>
+        </div>
+      `).join('');
+    });
+
+    // Search functionality
+    document.getElementById('searchBtn').addEventListener('click', async () => {
+      const searchTerm = document.getElementById('searchInput').value;
+      const response = await fetch(`/api/products?search=${searchTerm}`);
+      const products = await response.json();
+
+      const productsGrid = document.getElementById('allProducts');
+      productsGrid.innerHTML = products.map(product => `
+        <div class="product-card">
+          <div class="product-image">
+            <img src="${product.image}" alt="${product.name}">
+          </div>
+          <div class="product-info">
+            <h3 class="product-title">${product.name}</h3>
+            <div class="product-price">$${product.price.toFixed(2)}</div>
+            <a href="/product-details.html?id=${product.id}" class="btn btn-primary">View Details</a>
+          </div>
+        </div>
+      `).join('');
+    });
+</script>
+</body>
+</html>
